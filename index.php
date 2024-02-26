@@ -9,12 +9,11 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/global.css">
-    <title>Testing this weird stack</title>
+    <title>Social App</title>
 </head>
 <body>
-<h1>Welcome to test</h1>
+<h1>Welcome to Social App</h1>
 
-<p>This is a test of test.</p>
 <?php if (isset($_SESSION['error'])): ?>
     <p style="color: red;"><?php echo $_SESSION['error']; ?></p>
     <?php unset($_SESSION['error']); ?>
