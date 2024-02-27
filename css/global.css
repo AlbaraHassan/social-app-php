@@ -10,7 +10,7 @@ h1 {
     display: none;
 }
 
-#input {
+.login-form div {
     display: flex;
     flex-direction: column;
 }
