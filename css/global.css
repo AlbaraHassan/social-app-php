@@ -15,6 +15,15 @@ h1 {
     flex-direction: column;
 }
 
+.signup-form div{
+    display: flex;
+    flex-direction: column;
+}
+
+.link{
+    padding-top: 8px;
+}
+
 form {
     display: flex;
     flex-direction: column;

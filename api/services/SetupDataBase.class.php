@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__.'/../dao/BaseDao.php');
+require_once(__DIR__ . '/../dao/BaseDao.class.php');
 
 class SetupDatabase extends BaseDao
 {

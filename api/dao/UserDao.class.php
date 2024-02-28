@@ -1,5 +1,5 @@
 <?php
-require_once (__DIR__.'/BaseDao.php');
+require_once (__DIR__ . '/BaseDao.class.php');
 class UserDao extends BaseDao{
     public function __construct()
     {
@@ -9,6 +9,11 @@ class UserDao extends BaseDao{
     public function getByEmail($email)
     {
         return $this->query_unique("Select * from user where email = '$email'");
+    }
+
+    public function create($data)
+    {
+        return $this->add($data);
     }
 
 }
