@@ -13,19 +13,26 @@ class AuthService extends BaseService
         parent::__construct(new UserDao());
     }
 
-    public function findByEmail($data)
+    public function findByEmail($email)
     {
-        $user = $this->dao->getByEmail($data['email']);
+        return $this->dao->getByEmail($email);
+
+    }
+
+    public function login($data)
+    {
+        $user = $this->findByEmail($data['email']);
         if (!$user) {
             return Flight::halt(404, json_encode(['message' => 'User Does Not Exist']));
         }
         if ($user['email'] == $data['email'] && hash('sha256', $data['password']) == $user['password']) {
             $jwtPayload = ['email' => $user['email'], 'name' => $user['username']];
-            $jwt = JWT::encode($jwtPayload, ConfigService::getJwtSecrete(), 'HS256');
+            $jwt = JWT::encode($jwtPayload, ConfigService::getJwtSecret(), 'HS256');
             return Flight::json(['token' => $jwt, 'name' => $user['username']]);
         } else {
             return Flight::halt(401, json_encode(['message' => 'Incorrect Credentials']));
         }
+
     }
 
     public function register($data)

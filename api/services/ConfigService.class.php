@@ -30,7 +30,7 @@ class ConfigService
         return $_ENV['DATABASE'];
     }
 
-    public static function getJwtSecrete()
+    public static function getJwtSecret()
     {
         return $_ENV['JWT_SECRET'];
     }
