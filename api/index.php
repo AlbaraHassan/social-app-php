@@ -8,6 +8,7 @@ require_once('./routes/PostRoutes.php');
 require_once('./services/AuthService.class.php');
 $SetupDataBase = require_once('./services/SetupDataBase.class.php');
 $SetupDataBase->createUserTable();
+$SetupDataBase->createPostTable();
 
 Flight::register('authService', 'AuthService');
 

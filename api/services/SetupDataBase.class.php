@@ -5,16 +5,17 @@ require_once(__DIR__ . '/../dao/BaseDao.class.php');
 class SetupDatabase extends BaseDao
 {
 
-    private static $instance;
+    private static SetupDatabase $instance;
     public function __construct(){
         parent::__construct("user");
     }
-    public static function getInstance(){
+    public static function getInstance(): SetupDatabase
+    {
         if (!isset(self::$instance)) {
             self::$instance = new SetupDatabase();
         }
         return self::$instance;    }
-    public function createUserTable()
+    public function createUserTable(): void
     {
         $query = "CREATE TABLE IF NOT EXISTS user (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -26,6 +27,23 @@ class SetupDatabase extends BaseDao
         try {
             $this->query($query);
             error_log("User table created successfully!");
+        } catch (PDOException $e) {
+            error_log("Error creating user table: " . $e->getMessage());
+        }
+    }
+
+    public function createPostTable(): void
+    {
+        $query = "CREATE TABLE IF NOT EXISTS post (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    content VARCHAR(255) NOT NULL,
+                    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    createdBy INT,
+                    FOREIGN KEY (createdBy) REFERENCES user(id)
+                 )";
+        try {
+            $this->query($query);
+            error_log("Post table created successfully!");
         } catch (PDOException $e) {
             error_log("Error creating user table: " . $e->getMessage());
         }
