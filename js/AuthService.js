@@ -2,14 +2,14 @@ $(document).ready(() => {
     const token = localStorage.getItem('token');
     if (token) {
         if(!location.href.includes('index')){
-            location.replace('/index.html');
+            location.replace('#home');
         }
         const user = JSON.parse(atob(token.split('.')[1]))
         localStorage.setItem('user', JSON.stringify(user))
         $('#user-email').text(user.name);
         $('#success-message').show();
     } else if ((!location.href.includes('login') && !location.href.includes('register')) && !token) {
-        location.replace('/login.html');
+        location.replace('#login');
     }
 
     $('.login-form').submit((event) => {
@@ -25,7 +25,7 @@ $(document).ready(() => {
             contentType: 'application/json',
             success: (response) => {
                 localStorage.setItem('token', response.token);
-                location.replace('/index.html');
+                location.replace('#home');
             },
             error: (xhr, status, error) => {
                 console.error({ xhr, status, error });
@@ -50,7 +50,7 @@ $(document).ready(() => {
             contentType: 'application/json',
             success: (response) => {
                 localStorage.setItem('token', response.token);
-                location.replace('/index.html');
+                location.replace('#home');
             },
             error: (xhr, status, error) => {
                 console.error({ xhr, status, error });

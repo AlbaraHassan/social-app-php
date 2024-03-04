@@ -4,12 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/spapp.css">
     <title>Social App</title>
 </head>
 <body>
-<h1>Welcome to Social App</h1>
-<div id="success-message" style="display: none;">Welcome, <span id="user-email"></span>!</div>
+<main id="spapp" role="main">
+    <section id="login"></section>
+    <section id="register"></section>
+    <section id="home"></section>
+    <section id="error_404"><h1>Page not found</h1></section>
+</main>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="js/jquery.spapp.js"></script>
 <script src="js/AuthService.js"></script>
+<script src="js/spapp.js"></script>
 </body>
 </html>
