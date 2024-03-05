@@ -2,22 +2,20 @@ $(document).ready(function() {
 
     $("main#spapp > section").width($(document).width());
 
-    var app = $.spapp({pageNotFound : 'error_404'});
+    var app = $.spapp({pageNotFound : 'error_404', templateDir: '../'});
 
     app.route({
         view: "login",
-        load: "../login.html",
-        onCreate: ()=>{
-            console.log('yaaas')}
+        load: "login.html",
     });
     app.route({
         view: "register",
-        load: "../register.html",
+        load: "register.html",
     });
 
     app.route({
         view: "home",
-        load: "../home.html",
+        load: "home.html",
     });
 
 

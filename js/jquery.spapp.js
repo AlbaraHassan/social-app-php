@@ -25,38 +25,42 @@
 
         // manage hash change
         var routeChange = function() {
-            var id    = location.hash.slice(1);
+            var id = location.hash.slice(1);
             var route = routes[id];
-            var elm   = $("#"+id);
+            var elm = $("#" + id);
+            var prevSection = $(".spapp-created")
 
-            if( ! elm || ! route) {
-                if(config.pageNotFound) {
+            if (!elm || !route) {
+                if (config.pageNotFound) {
                     window.location.hash = config.pageNotFound;
                     return;
                 }
-                console.log(id+" not defined");
+                console.log(id + " not defined");
                 return;
             }
 
-            if(elm.hasClass("spapp-created")) {
+            // Clear the content of previously created section because this library is broken and is not good
+            prevSection.empty();
+            prevSection.removeClass("spapp-created");
+
+            if (elm.hasClass("spapp-created")) {
                 route.onReady();
             } else {
                 elm.addClass("spapp-created");
-                if( ! route.load) {
+                if (!route.load) {
                     route.onCreate();
                     route.onReady();
                 } else {
-                    elm.load(config.templateDir+route.load, function() {
+                    elm.load(config.templateDir + route.load, function() {
                         route.onCreate();
                         route.onReady();
                     });
                 }
             }
         }
-
         // and run
         this.run = function() {
-            window.addEventListener('hashchange', function() { routeChange(); });
+            window.addEventListener('hashchange', function() { routeChange();});
             if( ! window.location.hash) { window.location.hash = config.defaultView; } else { routeChange(); }
         }
 
