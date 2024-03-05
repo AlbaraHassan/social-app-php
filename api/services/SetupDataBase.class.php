@@ -15,7 +15,7 @@ class SetupDatabase extends BaseDao
             self::$instance = new SetupDatabase();
         }
         return self::$instance;    }
-    public function createUserTable(): void
+    private function createUserTable(): void
     {
         $query = "CREATE TABLE IF NOT EXISTS user (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,7 +32,7 @@ class SetupDatabase extends BaseDao
         }
     }
 
-    public function createPostTable(): void
+    private function createPostTable(): void
     {
         $query = "CREATE TABLE IF NOT EXISTS post (
                     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -47,6 +47,11 @@ class SetupDatabase extends BaseDao
         } catch (PDOException $e) {
             error_log("Error creating user table: " . $e->getMessage());
         }
+    }
+
+    public function createTables(){
+        $this->createUserTable();
+        $this->createPostTable();
     }
 }
 
