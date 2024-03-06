@@ -8,7 +8,8 @@
         config = $.extend({
             defaultView  : $("main#spapp > section:last-child").attr("id"),
             templateDir  : './tpl/',
-            pageNotFound : false
+            pageNotFound : false,
+            reloadView   : false
         }, options );
 
         $("main#spapp > section").each(function(k, e) {
@@ -40,8 +41,13 @@
             }
 
             // Clear the content of previously created section because this library is broken and is not good
-            prevSection.empty();
-            prevSection.removeClass("spapp-created");
+
+
+            if(config.reloadView) {
+                prevSection.empty();
+                prevSection.removeClass("spapp-created");
+            }
+
 
             if (elm.hasClass("spapp-created")) {
                 route.onReady();
