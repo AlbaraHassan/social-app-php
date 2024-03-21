@@ -6,9 +6,11 @@ require_once('./dao/UserDao.class.php');
 require_once('./routes/AuthRoutes.php');
 require_once('./routes/PostRoutes.php');
 require_once('./services/AuthService.class.php');
+require_once('./services/PostService.class.php');
 $SetupDataBase = require_once('./services/SetupDataBase.class.php');
 $SetupDataBase->createTables();
 
 Flight::register('authService', 'AuthService');
+Flight::register('postService', 'PostService');
 
 Flight::start();

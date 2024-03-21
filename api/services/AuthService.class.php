@@ -26,7 +26,7 @@ class AuthService extends BaseService
             return Flight::halt(404, json_encode(['message' => 'User Does Not Exist']));
         }
         if (hash('sha256', $data['password']) == $user['password']) {
-            $jwtPayload = ['email' => $user['email'], 'name' => $user['username']];
+            $jwtPayload = ['id' => $user['id'], 'email' => $user['email'], 'name' => $user['username']];
             $jwt = JWT::encode($jwtPayload, ConfigService::getJwtSecret(), 'HS256');
             return Flight::json(['token' => $jwt]);
         } else {
@@ -42,7 +42,7 @@ class AuthService extends BaseService
         }
 
         $user = $this->dao->create(['email' => $data['email'], 'password' => hash('sha256', $data['password']), 'username' => $data['username']]);
-        $jwtPayload = ['email' => $user['email'], 'name' => $user['username']];
+        $jwtPayload = ['id' => $user['id'], 'email' => $user['email'], 'name' => $user['username']];
         $jwt = JWT::encode($jwtPayload, ConfigService::getJwtSecret(), 'HS256');
         return Flight::json(['token' => $jwt]);
     }

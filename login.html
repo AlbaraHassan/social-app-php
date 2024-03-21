@@ -1,25 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/spapp.css">
-    <title>Social App</title>
-</head>
-<body>
 <h1>Welcome to Social App</h1>
 
-<div id="error-message" style="display: none; color: red;"></div>
+<div id="error-message"></div>
 
 
 <form name="login" class='login-form' method="post">
     <div>
         <label for="email">Email:</label>
         <input id="email" name="email" value="" type="email"/>
+        <small id="email-error-message" class="error-message"></small>
     </div>
     <div>
         <label for="password">Password:</label><input id="password" name="password" value="" type="password"/>
+        <small id="password-error-message" class="error-message"></small>
     </div>
     <button type="submit">Submit</button>
 </form>
@@ -27,6 +19,5 @@
 <div class="link">
     <a href="#register">Don't have an account? Signup.</a>
 </div>
-<script src="js/AuthService.js"></script>
-</body>
-</html>
+<script src="js/forms/login.js"></script>
+
