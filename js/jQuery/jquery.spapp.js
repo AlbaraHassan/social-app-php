@@ -1,39 +1,44 @@
-(function($) {
+(function ($) {
 
-    $.spapp = function(options) {
+    $.spapp = function (options) {
 
         // set config and routes
         var config, routes = {};
 
         config = $.extend({
-            defaultView  : $("main#spapp > section:last-child").attr("id"),
-            templateDir  : './tpl/',
-            pageNotFound : false,
-            reloadView   : false
-        }, options );
+            defaultView: $("main#spapp > section:last-child").attr("id"),
+            templateDir: './tpl/',
+            pageNotFound: false,
+            reloadView: false
+        }, options);
 
-        $("main#spapp > section").each(function(k, e) {
+        $("main#spapp > section").each(function (k, e) {
             var elm = $(this);
             routes[elm.attr("id")] = {
-                view     : elm.attr("id"),
-                load     : elm.data("load"),
-                onCreate : function() { },
-                onReady  : function() { }
+                view: elm.attr("id"),
+                load: elm.data("load"),
+                onCreate: function () {
+                },
+                onReady: function () {
+                }
             }
         });
         // update rotues programatically
-        this.route = function(options) { $.extend(routes[options.view], options); }
+        this.route = function (options) {
+            $.extend(routes[options.view], options);
+        }
 
         // manage hash change
-        var routeChange = function() {
+        var routeChange = function () {
             var id = location.hash.slice(1);
             var route = routes[id];
             var elm = $("#" + id);
             var prevSection = $(".spapp-created")
-
+            var pageNotFound = $(`main#spapp > section#${config.pageNotFound} > *`)
             if (!elm || !route) {
                 if (config.pageNotFound) {
                     window.location.hash = config.pageNotFound;
+                    pageNotFound.removeClass('d-none')
                     return;
                 }
                 console.log(id + " not defined");
@@ -43,7 +48,7 @@
             // Clear the content of previously created section because this library is broken and is not good
 
 
-            if(config.reloadView) {
+            if (config.reloadView) {
                 prevSection.empty();
                 prevSection.removeClass("spapp-created");
             }
@@ -57,7 +62,7 @@
                     route.onCreate();
                     route.onReady();
                 } else {
-                    elm.load(config.templateDir + route.load, function() {
+                    elm.load(config.templateDir + route.load, function () {
                         route.onCreate();
                         route.onReady();
                     });
@@ -65,9 +70,15 @@
             }
         }
         // and run
-        this.run = function() {
-            window.addEventListener('hashchange', function() { routeChange();});
-            if( ! window.location.hash) { window.location.hash = config.defaultView; } else { routeChange(); }
+        this.run = function () {
+            window.addEventListener('hashchange', function () {
+                routeChange();
+            });
+            if (!window.location.hash) {
+                window.location.hash = config.defaultView;
+            } else {
+                routeChange();
+            }
         }
 
         return this;

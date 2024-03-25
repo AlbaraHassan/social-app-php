@@ -11,13 +11,18 @@ h1 {
     display: none;
 }
 
-.login-form div {
+.btn-primary {
+    background: #00c4ff !important;
+    border-color: #00c4ff !important;
+}
+
+#login-form div {
     display: flex;
     flex-direction: column;
     position: relative;
 }
 
-.signup-form div {
+#signup-form div {
     display: flex;
     flex-direction: column;
     position: relative;

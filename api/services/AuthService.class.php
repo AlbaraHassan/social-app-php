@@ -41,7 +41,7 @@ class AuthService extends BaseService
             return Flight::halt(404, json_encode(['message' => 'User Already Exists']));
         }
 
-        $user = $this->dao->create(['email' => $data['email'], 'password' => hash('sha256', $data['password']), 'username' => $data['username']]);
+        $user = parent::add(['email' => $data['email'], 'password' => hash('sha256', $data['password']), 'username' => $data['username']]);
         $jwtPayload = ['id' => $user['id'], 'email' => $user['email'], 'name' => $user['username']];
         $jwt = JWT::encode($jwtPayload, ConfigService::getJwtSecret(), 'HS256');
         return Flight::json(['token' => $jwt]);

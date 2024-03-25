@@ -1,31 +1,31 @@
-<h1>Welcome to Social App</h1>
+<h1 class="text-info">Welcome to Social App</h1>
 
 <div id="error-message" style="display: none; color: red;"></div>
 
 
-<form name="login" class='signup-form' method="post">
-    <div>
+<form name="login" id='signup-form' method="post">
+    <div class="form-group">
         <label for="email">Email:</label>
-        <input id="email" name="email" value="" type="email"/>
+        <input id="email" name="email" class="form-control border-2" value="" type="email"/>
         <small id="email-error-message" class="error-message"></small>
     </div>
-    <div>
+    <div class="form-group">
         <label for="username">User Name:</label>
-        <input id="username" name="username" value="" type="text"/>
+        <input id="username" name="username" class="form-control border-2" value="" type="text"/>
         <small id="username-error-message" class="error-message"></small>
     </div>
-    <div>
-        <label for="password">Password:</label><input id="password" name="password" value="" type="password"/>
+    <div class="form-group">
+        <label for="password">Password:</label><input id="password" class="form-control border-2" name="password" value="" type="password"/>
         <small id="password-error-message" class="error-message"></small>
 
     </div>
-    <div>
-        <label for="repeat">Repeat Password:</label><input id="repeat" name="repeat" value="" type="password"/>
+    <div class="form-group">
+        <label for="repeat">Repeat Password:</label><input id="repeat" class="form-control border-2" name="repeat" value="" type="password"/>
         <small id="repeat-error-message" class="error-message"></small>
     </div>
-    <button type="submit">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-<div class="link">
+<div class="btn-link mt-4">
     <a href="#login">Already have and account? Login.</a>
 </div>
 <script src="js/forms/register.js"></script>
