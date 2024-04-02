@@ -12,7 +12,7 @@ class PostService extends BaseService
 
     public function create($data)
     {
-        return Flight::json(parent::add($data));
+        return Flight::json($this->dao->create($data));
     }
 
     public function get($id)
@@ -22,7 +22,7 @@ class PostService extends BaseService
 
     public function get_all()
     {
-        return Flight::json(parent::get_all());
+        return Flight::json($this->dao->get_all());
     }
 
     public function delete($id)

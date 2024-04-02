@@ -62,7 +62,6 @@ $(document).ready(() => {
                     console.error({xhr, status, error});
                     const errorMessage = xhr.responseText ? JSON.parse(xhr.responseText).message : 'Unknown error';
                     $('#error-message').text(errorMessage).show();
-                    $('#success-message').hide();
                 }
             });
         }

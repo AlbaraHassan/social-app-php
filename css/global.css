@@ -11,6 +11,20 @@ h1 {
     display: none;
 }
 
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+}
+
+
+
+
 .btn-primary {
     background: #00c4ff !important;
     border-color: #00c4ff !important;
@@ -45,15 +59,39 @@ input {
     padding: 10px;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+
+main section#home{
+    padding-top: 100px;
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
 }
+
+main section{
+    padding-top: 100px;
+}
+
+.card-body {
+    height: 150px;
+    overflow-y: hidden;
+    transition: height 0.3s ease;
+}
+
+.card-body.normal {
+    transition: height 0.3s ease;
+}
+
+
+
+textarea.form-control{
+    resize: none;
+}
+
+.card-text{
+    white-space: pre-wrap;
+    font-size: 18px;
+}
+
+
 
 .error-message {
     color: red;
