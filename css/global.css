@@ -3,16 +3,47 @@ body {
 }
 
 h1 {
-    color: blue;
+    color: #00c4ff;
 }
+
 
 #message {
     display: none;
 }
 
-#input {
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+}
+
+
+
+
+.btn-primary {
+    background: #00c4ff !important;
+    border-color: #00c4ff !important;
+}
+
+#login-form div {
     display: flex;
     flex-direction: column;
+    position: relative;
+}
+
+#signup-form div {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.link {
+    padding-top: 8px;
 }
 
 form {
@@ -24,16 +55,54 @@ form {
 }
 
 input {
-    background: bisque;
+    background: #fdeee1;
     padding: 10px;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+
+main section#home{
+    padding-top: 100px;
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+}
+
+main section{
+    padding-top: 100px;
+}
+
+.card-body {
+    height: 150px;
+    overflow-y: hidden;
+    transition: height 0.3s ease;
+}
+
+.card-body.normal {
+    transition: height 0.3s ease;
+}
+
+
+
+textarea.form-control{
+    resize: none;
+}
+
+.card-text{
+    white-space: pre-wrap;
+    font-size: 18px;
+}
+
+
+
+.error-message {
+    color: red;
+    font-size: small;
+    height: fit-content;
+    position: absolute;
+    bottom: -30%;
+    left: 10px;
+}
+
+#error-message{
+    color: red;
+    font-size: large;
 }
