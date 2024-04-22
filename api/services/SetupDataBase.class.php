@@ -59,9 +59,11 @@ class SetupDatabase extends BaseDao
         $query = "CREATE TABLE IF NOT EXISTS comment (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     content VARCHAR(255) NOT NULL,
+                    postId INT,
                     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     createdBy INT,
-                    FOREIGN KEY (createdBy) REFERENCES user(id)
+                    FOREIGN KEY (createdBy) REFERENCES user(id),
+                    FOREIGN KEY (postId) REFERENCES post(id)
                  )";
         try {
             $this->query($query);
@@ -73,19 +75,19 @@ class SetupDatabase extends BaseDao
 
     private function createLikesTable()
     {
-        $query = "CREATE TABLE like (
-  id INT PRIMARY KEY,
-  user_id INT NOT NULL,
-  post_id INT NULL,
-  comment_id INT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES user(id),
-  FOREIGN KEY (post_id) REFERENCES post(id),
-  FOREIGN KEY (comment_id) REFERENCES comment(id)
+        $query = "CREATE TABLE `like` (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  userId INT NOT NULL,
+  postId INT NULL,
+  commentId INT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (userId) REFERENCES user(id),
+  FOREIGN KEY (postId) REFERENCES post(id),
+  FOREIGN KEY (commentId) REFERENCES comment(id)
 )";
         try {
             $this->query($query);
-            error_log("Comment table created successfully!");
+            error_log("Likes table created successfully!");
         } catch (PDOException $e) {
             error_log("Error creating user table: " . $e->getMessage());
         }
