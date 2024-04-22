@@ -75,7 +75,7 @@ class SetupDatabase extends BaseDao
 
     private function createLikesTable()
     {
-        $query = "CREATE TABLE `like` (
+        $query = "CREATE TABLE IF NOT EXISTS `like` (
   id INT AUTO_INCREMENT PRIMARY KEY,
   userId INT NOT NULL,
   postId INT NULL,
@@ -93,12 +93,48 @@ class SetupDatabase extends BaseDao
         }
     }
 
+    private function createChatsTable()
+    {
+        $query = 'CREATE TABLE IF NOT EXISTS chat (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                senderId INT NOT NULL,
+                userId INT NOT NULL,
+                FOREIGN KEY (senderId) REFERENCES user(id),
+                FOREIGN KEY (userId) REFERENCES user(id)
+        )';
+        try {
+            $this->query($query);
+            error_log("Likes table created successfully!");
+        } catch (PDOException $e) {
+            error_log("Error creating user table: " . $e->getMessage());
+        }
+    }
+
+    private function createMessageTable()
+    {
+        $query = 'CREATE TABLE IF NOT EXISTS message (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    senderId INT NOT NULL,
+                    chatId INT NOT NULL,
+                    FOREIGN KEY (senderId) REFERENCES user(id),
+                    FOREIGN KEY (chatId) REFERENCES chat(id)
+                    )';
+        try {
+            $this->query($query);
+            error_log("Likes table created successfully!");
+        } catch (PDOException $e) {
+            error_log("Error creating user table: " . $e->getMessage());
+        }
+    }
+
     public function createTables()
     {
         $this->createUserTable();
         $this->createPostTable();
         $this->createCommentTable();
         $this->createLikesTable();
+        $this->createChatsTable();
+        $this->createMessageTable();
     }
 }
 

@@ -13,6 +13,17 @@ class CommentDao extends BaseDao
     }
 
 
+    public function get_by_id($id)
+    {
+        $sql = 'SELECT c.id, c.content, u.username as "createdBy", u.id as "createdById", (SELECT count(*) FROM `like` WHERE commentID = c.id) as likes
+FROM comment c
+         JOIN user u ON u.id = c.createdBy
+where c.id = :id';
+        return $this->query_unique($sql, ['id'=>$id]);
+    }
+
+
+
     public function create($data)
     {
         $data = $this->add($data);
@@ -27,10 +38,10 @@ ORDER BY c.createdAt DESC');
     {
         $offset = ($page - 1) * $limit;
 
-        $sql = 'SELECT c.id, c.content, u.username as "createdBy", u.id as "createdById"
-            FROM comment c
-            JOIN user u ON u.id = c.createdBy
-            ORDER BY c.createdAt DESC';
+        $sql = 'SELECT c.id, c.content, u.username as "createdBy", u.id as "createdById", (SELECT count(*) FROM `like` WHERE commentId = c.id) as likes
+FROM comment c
+         JOIN user u ON u.id = c.createdBy
+ORDER BY c.createdAt DESC';
 
 //        $sql .= " LIMIT $limit OFFSET $offset";  //TODO: PAGINATION
 

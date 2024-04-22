@@ -39,4 +39,9 @@ Flight::group('/post', function () {
         return Flight::postService()->delete($id);
     });
 
+    Flight::route('PATCH /like', function (){
+        $id = Flight::request()->query['id'];
+        return Flight::postService()->handleLike($id);
+    });
+
 }, [new Auth()]);

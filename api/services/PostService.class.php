@@ -17,7 +17,7 @@ class PostService extends BaseService
 
     public function get($id)
     {
-        return Flight::json(parent::get_by_id($id));
+        return Flight::json($this->dao->get_by_id($id));
     }
 
     public function get_all(int $page = 1, int $limit = 10)
@@ -33,5 +33,10 @@ class PostService extends BaseService
     public function update($id, $entity)
     {
         return Flight::json(parent::update($id, $entity));
+    }
+
+    public function handleLike($id)
+    {
+        return Flight::json($this->dao->handleLike($id));
     }
 }
