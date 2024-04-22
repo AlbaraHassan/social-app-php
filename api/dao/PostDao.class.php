@@ -19,12 +19,17 @@ JOIN user u ON u.id = p.createdBy
 ORDER BY p.createdAt DESC');
     }
 
-    public function get_all(): bool|array
+    public function get_all(int $page = 1, int $limit = 10): bool|array
     {
-        return $this->query('SELECT p.id, p.content, u.username as "createdBy", u.id as "createdById"
-FROM post p
-JOIN user u ON u.id = p.createdBy
-ORDER BY p.createdAt DESC;
-');
+        $offset = ($page - 1) * $limit;
+
+        $sql = 'SELECT p.id, p.content, u.username as "createdBy", u.id as "createdById"
+            FROM post p
+            JOIN user u ON u.id = p.createdBy
+            ORDER BY p.createdAt DESC';
+
+//        $sql .= " LIMIT $limit OFFSET $offset";  //TODO: PAGINATION
+
+        return $this->query($sql);
     }
 }

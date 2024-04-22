@@ -20,9 +20,9 @@ class PostService extends BaseService
         return Flight::json(parent::get_by_id($id));
     }
 
-    public function get_all()
+    public function get_all(int $page = 1, int $limit = 10)
     {
-        return Flight::json($this->dao->get_all());
+        return Flight::json($this->dao->get_all($page, $limit));
     }
 
     public function delete($id)

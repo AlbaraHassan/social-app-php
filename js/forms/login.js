@@ -29,7 +29,7 @@ $(document).ready(() => {
 
             $.ajax({
                 type: 'POST',
-                url: '/api/auth/login',
+                url: '/web/api/auth/login',
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
                 success: (response) => {

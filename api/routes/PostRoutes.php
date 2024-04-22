@@ -21,7 +21,17 @@ Flight::group('/post', function () {
     });
 
     Flight::route('GET /all', function (){
-        return Flight::postService()->get_all();
+
+        $params = [];
+        if (isset(Flight::request()->query['page'])) {
+            $params['page'] = Flight::request()->query['page'];
+        }
+
+        if (isset(Flight::request()->query['size'])) {
+            $params['limit'] = Flight::request()->query['size'];
+        }
+        return Flight::postService()->get_all(...$params);
+
     });
 
     Flight::route('DELETE /', function (){
