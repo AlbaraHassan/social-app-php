@@ -17,5 +17,6 @@ $SetupDataBase->createTables();
 Flight::register('authService', 'AuthService');
 Flight::register('postService', 'PostService');
 Flight::register('commentService', 'CommentService');
+Flight::register('chatService', 'ChatService');
 
 Flight::start();
