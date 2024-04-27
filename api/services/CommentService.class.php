@@ -1,13 +1,13 @@
 <?php
 require_once(__DIR__ . '/BaseService.class.php');
-require_once(__DIR__ . '/../dao/PostDao.class.php');
+require_once(__DIR__ . '/../dao/CommentDao.class.php');
 
-class PostService extends BaseService
+class CommentService extends BaseService
 {
 
     public function __construct()
     {
-        parent::__construct(new PostDao());
+        parent::__construct(new CommentDao());
     }
 
     public function create($data)

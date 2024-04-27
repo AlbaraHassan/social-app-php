@@ -3,7 +3,7 @@ $(document).ready(function () {
     $("main#spapp > section").width($(document).width());
 
     var app = $.spapp({
-        pageNotFound: 'error_404', templateDir: '../', reloadView: true
+        pageNotFound: 'error_404', templateDir: './', reloadView: true
     });
 
     app.route({

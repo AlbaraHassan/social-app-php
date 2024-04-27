@@ -62,7 +62,7 @@ $(document).ready(() => {
 
     $.ajax({
         type: 'GET',
-        url: '/api/post/all',
+        url: '/web/api/post/all',
         contentType: 'application/json',
         headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
         success: (response) => {
@@ -89,7 +89,7 @@ $(document).ready(() => {
 
             $.ajax({
                 type: 'POST',
-                url: '/api/post',
+                url: '/web/api/post',
                 data: JSON.stringify(formData),
                 headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
                 contentType: 'application/json',

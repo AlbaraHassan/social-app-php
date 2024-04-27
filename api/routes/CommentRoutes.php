@@ -1,23 +1,23 @@
 <?php
 require_once(__DIR__ . '/../middleware/Auth.class.php');
 
-Flight::group('/post', function () {
+Flight::group('/comment', function () {
 
     Flight::route('POST /', function () {
         $data = json_decode(Flight::request()->getBody(), true);
         $data['createdBy'] = Flight::get('user')['id'];
-        return Flight::postService()->create($data);
+        return Flight::commentService()->create($data);
     });
 
     Flight::route('PATCH /', function (){
         $data = json_decode(Flight::request()->getBody(), true);
         $id = Flight::request()->query['id'];
-        return Flight::postService()->update($id,['content'=> $data['content']]);
+        return Flight::commentService()->update($id,['content'=> $data['content']]);
     });
 
     Flight::route('GET /', function (){
         $id = Flight::request()->query['id'];
-        return Flight::postService()->get($id);
+        return Flight::commentService()->get($id);
     });
 
     Flight::route('GET /all', function (){
@@ -30,18 +30,18 @@ Flight::group('/post', function () {
         if (isset(Flight::request()->query['size'])) {
             $params['limit'] = Flight::request()->query['size'];
         }
-        return Flight::postService()->get_all(...$params);
+        return Flight::commentService()->get_all(...$params);
 
     });
 
     Flight::route('DELETE /', function (){
         $id = Flight::request()->query['id'];
-        return Flight::postService()->delete($id);
+        return Flight::commentService()->delete($id);
     });
 
     Flight::route('PATCH /like', function (){
         $id = Flight::request()->query['id'];
-        return Flight::postService()->handleLike($id);
+        return Flight::commentService()->handleLike($id);
     });
 
 }, [new Auth()]);

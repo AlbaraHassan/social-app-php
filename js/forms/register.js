@@ -51,7 +51,7 @@ $(document).ready(() => {
 
             $.ajax({
                 type: 'POST',
-                url: '/api/auth/signup',
+                url: '/web/api/auth/signup',
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
                 success: (response) => {
