@@ -3,7 +3,6 @@
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-
 class Auth
 {
     public function before($params)
@@ -21,6 +20,7 @@ class Auth
         if ($user) {
             unset($user['password']);
             Flight::set('user', $user);
+            User::setUser();
             return true;
         } else {
             return Flight::halt(401, json_encode(['message' => 'Invalid Token']));

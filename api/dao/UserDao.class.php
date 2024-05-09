@@ -8,7 +8,11 @@ class UserDao extends BaseDao{
 
     public function getByEmail($email)
     {
-        return $this->query_unique("Select * from user where email = '$email'");
+        return Prisma::sql()->select('*')
+            ->from('user')
+            ->where(equals('email', ':email'))
+            ->bind(['email'=>$email])
+            ->execute_unique();
     }
 
     public function create($data)

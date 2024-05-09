@@ -1,11 +1,12 @@
 <?php
 require_once(__DIR__ . '/../middleware/Auth.class.php');
+require_once(__DIR__ . '/../context/UserContext.php');
 
 Flight::group('/post', function () {
 
     Flight::route('POST /', function () {
         $data = json_decode(Flight::request()->getBody(), true);
-        $data['createdBy'] = Flight::get('user')['id'];
+        $data['createdBy'] = User::id();
         return Flight::postService()->create($data);
     });
 
