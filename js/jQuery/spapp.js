@@ -21,6 +21,12 @@ $(document).ready(function () {
     });
 
 
+    app.route({
+        view: "thread",
+        load: "thread.html",
+    });
+
+
     app.run();
 
 });

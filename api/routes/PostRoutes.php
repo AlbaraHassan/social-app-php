@@ -87,7 +87,7 @@ Flight::group('/post', function () {
 
     /**
      * @OA\Get(
-     *      path="/post.all",
+     *      path="/post/all",
      *      tags={"posts"},
      *      summary="Get all posts",
      *      @OA\Response(

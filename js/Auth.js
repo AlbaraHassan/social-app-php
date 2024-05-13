@@ -1,7 +1,7 @@
 $(document).ready(() => {
     const token = localStorage.getItem('token');
     if (token) {
-        if (!location.href.includes('index')) {
+        if (!location.href.includes('thread')) {
             location.replace('#home');
         }
         const user = JSON.parse(atob(token.split('.')[1]))

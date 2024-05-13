@@ -32,6 +32,29 @@ class CommentDao extends BaseDao
     }
 
 
+    public function get_parent_by_id($id)
+    {
+        return Prisma::sql()->select('c.id', 'c.content',
+            alias('u.username', 'createdBy'),
+            alias('u.id', 'createdById'),
+            Prisma::sql()->select(CNT())
+                ->from('`like`')
+                ->where(equals('contentId', 'c.id'))
+                ->nested()
+                ->alias('likes'),
+            Prisma::sql()->select(CNT())->from('`like`')->
+            where(equals('u.id',':userId'), equals('contentId', 'c.id'))
+                ->nested()->alias('isLiked')
+        )
+            ->from(alias('content', 'c'))
+            ->join(alias('user', 'u'), equals('u.id', 'c.createdBy'))
+            ->where(equals('c.id', ':id'))
+            ->bind(['id' => $id, 'userId'=>User::id()])
+            ->execute_unique();
+    }
+
+
+
     public function create($data)
     {
         $data = $this->add([...$data, "type" => "comment"]);
@@ -56,14 +79,18 @@ class CommentDao extends BaseDao
                 ->from('`like`')
                 ->where(equals('contentId', 'c.id'))
                 ->nested()
-                ->alias('likes'))
+                ->alias('likes'),
+            Prisma::sql()->select(CNT())->from('`like`')->
+            where(equals('u.id',':userId'), equals('contentId', 'c.id'))
+                ->nested()->alias('isLiked')
+        )
             ->from(alias('content', 'c'))
             ->join(alias('user', 'u'),equals('u.id', 'c.createdBy'))
             ->where(equals('c.type', ':type'), equals('c.parentId', ':postId'))
             ->order('c.createdAt', DESC)
 //             ->limit($limit)
 //            ->offset($offset)
-            ->bind(["type" => "comment", "postId" => $postId])->execute();
+            ->bind(["type" => "comment", "postId" => $postId, "userId"=>User::id()])->execute();
     }
 
 

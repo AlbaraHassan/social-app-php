@@ -57,8 +57,11 @@ class PostDao extends BaseDao
                 alias('u.username', 'createdBy'),
                 alias('u.id', 'createdById'),
                 Prisma::sql()->select(CNT())->from('`like`')->
-                where('contentId = p.id')
-                    ->nested()->alias('likes')
+                where(equals('contentId', 'p.id'))
+                    ->nested()->alias('likes'),
+                Prisma::sql()->select(CNT())->from('`like`')->
+                where(equals('u.id',':userId'), equals('contentId', 'p.id'))
+                    ->nested()->alias('isLiked')
             )
             ->from("content p")
             ->join("user u", "u.id = p.createdBy")
@@ -66,11 +69,12 @@ class PostDao extends BaseDao
             ->order("p.createdAt", DESC)
 //            ->limit($limit)
 //            ->offset($offset)
+            ->bind(['userId'=>User::id()])
             ->execute();
     }
 
 
-    private function checkIfLiked($object)
+    public function checkIfLiked($object)
     {
         $where = Prisma::sql()->where(
             equals('l.contentId', ':contentId'),

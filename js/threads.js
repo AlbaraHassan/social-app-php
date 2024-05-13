@@ -1,9 +1,7 @@
-$(document).ready(() => {
-    if (location.href.includes('?id=')) {
-        const urlWithoutQueryParam = location.href.split('?')[0];
-        location.replace(urlWithoutQueryParam);
-    }
-    $('#post-form').validate({
+$(document).ready(() =>{
+const urlParams = new URLSearchParams(window.location.search);
+
+    $('#comment-form').validate({
         errorElement: 'small',
         rules: {
             content: {required: true}
@@ -12,17 +10,17 @@ $(document).ready(() => {
         submitHandler: (form, event) => {
             event.preventDefault();
             const content = $('#content').val();
-            if (!content) return
-            const formData = {content};
+            if(!content) return
+            const formData = {content, parentId: urlParams.get('id')};
             $.ajax({
                 type: 'POST',
-                url: '/web/api/post',
+                url: '/web/api/comment',
                 data: JSON.stringify(formData),
                 headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
                 contentType: 'application/json',
                 success: (post) => {
                     $('#content').val('');
-                    $('#posts').prepend(createPostCard(post));
+                    $('#comments').prepend(createThreadCard(post));
                 },
                 error: ({xhr, status, error}) => {
                     console.error({xhr, status, error});
@@ -54,12 +52,13 @@ $(document).ready(() => {
         return colors[id % colors.length];
     };
 
-    const createPostCard = (post) => {
+    const createThreadCard = (post) => {
         const {createdBy, createdById, content, id, likes, isLiked} = post;
         const avatar = createUserAvatar(createdBy, createdById);
         const lines = content.split('\n').length;
         const button = lines > 4 ? `<img alt="" height="60" width="60" src="public/down.svg" class="btn btn-link position-absolute show-more-btn"/>` : '';
         const likeButton = `<img id=${id} class="icon" src=${isLiked ? "public/liked.svg" :"public/unliked.svg"} alt="" height="24" width="24" />`
+
         return `
         <div class="card mb-3 w-100 shadow-sm border-light-subtle border-1 position-relative p-4">
         <div class="pb-5" id="post-${id}">
@@ -76,11 +75,19 @@ $(document).ready(() => {
                 ${likeButton}
                 <span id="likes">${likes}</span>
              </div>
-        </div>
-    `;
+        </div>`;
     };
 
-    $(window).on('popstate', () => location.reload());
+
+    $(window).on('popstate', ()=>location.reload());
+
+
+    $(document).on('click', 'div[id^=post-]', function () {
+        const postId = $(this).attr('id')?.split('-')?.[1];
+        const url = `?id=${postId}#thread`;
+        history.pushState(null, null, url);
+        location.reload()
+    });
 
     $(document).on('click', '.icon', function () {
         const icon = $(`#${$(this).attr('id')}`)
@@ -89,7 +96,7 @@ $(document).ready(() => {
         console.log($(this).attr('id'))
         $.ajax({
             type: 'PATCH',
-            url: `/web/api/post/like?id=${$(this).attr('id')}`,
+            url: `/web/api/comment/like?id=${$(this).attr('id')}`,
             contentType: 'application/json',
             headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
             success: (response) => {
@@ -109,13 +116,6 @@ $(document).ready(() => {
     })
 
 
-    $(document).on('click', 'div[id^=post-]', function () {
-        const postId = $(this).attr('id')?.split('-')?.[1];
-        const url = `?id=${postId}#thread`;
-        history.pushState(null, null, url);
-        location.reload()
-
-    });
 
     $(document).on('click', '.show-more-btn', function () {
         const $body = $(this).closest('.card').find('.card-body');
@@ -138,12 +138,13 @@ $(document).ready(() => {
 
     $.ajax({
         type: 'GET',
-        url: '/web/api/post/all',
+        url: `/web/api/comment/all?postId=${urlParams.get('id')}`,
         contentType: 'application/json',
         headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
         success: (response) => {
-            response.forEach((post) => {
-                $('#posts').append(createPostCard(post));
+            $('#parent').append(createThreadCard(response.parent))
+            response["comments"].forEach((post) => {
+                $('#comments').append(createThreadCard(post));
             });
         },
         error: ({xhr, status, error}) => {

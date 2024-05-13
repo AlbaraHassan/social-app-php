@@ -22,7 +22,9 @@ class CommentService extends BaseService
 
     public function get_all_by_post(string $postId, int $page = 1, int $limit = 10)
     {
-        return Flight::json($this->dao->get_all_by_post($postId,$page, $limit));
+        $parent = $this->dao->get_parent_by_id($postId,$page, $limit);
+        $comments = $this->dao->get_all_by_post($postId,$page, $limit);
+        return Flight::json(['parent'=>$parent, 'comments'=>$comments]);
     }
 
     public function delete($id)
