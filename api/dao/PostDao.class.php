@@ -1,5 +1,7 @@
 <?php
 require_once(__DIR__ . '/BaseDao.class.php');
+require_once(__DIR__ . '/../context/UserContext.php');
+require_once(__DIR__ . '/../utils/Prisma.php');
 
 class PostDao extends BaseDao
 {
@@ -8,62 +10,91 @@ class PostDao extends BaseDao
 
     public function __construct()
     {
-        parent::__construct('post');
+        parent::__construct('content');
         $this->likes = new BaseDao('`like`');
     }
 
 
     public function create($data)
     {
-        $data = $this->add($data);
-        return $this->query_unique('SELECT p.id, p.content, u.username as "createdBy", u.id as "createdById"
-FROM post p
-JOIN user u ON u.id = p.createdBy
-    WHERE p.id = ' . $data['id'] . '
-ORDER BY p.createdAt DESC');
+        $data = $this->add([...$data, "type" => "post"]);
+        return Prisma::sql()->select('p.id', 'p.content',
+            alias('u.username', 'createdBy'),
+            alias('u.id', "createdById"))
+            ->from('content p')
+            ->join('user u', 'u.id = p.createdBy')
+            ->where('p.id = :id', 'AND', 'p.type = "post"')
+            ->order('p.createdAt', 'DESC')
+            ->bind(["id" => $data['id']])
+            ->execute_unique();
     }
 
     public function get_by_id($id)
     {
-        $sql = 'SELECT p.id, p.content, u.username as "createdBy", u.id as "createdById", (SELECT count(*) FROM `like` WHERE postId = p.id) as likes
-FROM post p
-         JOIN user u ON u.id = p.createdBy
-where p.id = :id';
-        return $this->query_unique($sql, ['id'=>$id]);
+
+        return Prisma::sql()->select('p.id', 'p.content',
+            alias('u.username', 'createdById'),
+            alias('u.id', 'createdById'),
+            Prisma::sql()->select(CNT())
+                ->from('`like`')
+                ->where('contentId = p.id')
+                ->nested()
+                ->alias('likes'))
+            ->from('content p')
+            ->join('user u', 'u.id = p.createdBy')
+            ->where('p.type = "post"', 'p.id = :id')
+            ->bind(['id' => $id])
+            ->execute_unique();
     }
 
     public function get_all(int $page = 1, int $limit = 10): bool|array
     {
-        $offset = ($page - 1) * $limit;
-
-        $sql = 'SELECT p.id, p.content, u.username as "createdBy", u.id as "createdById", (SELECT count(*) FROM `like` WHERE postId = p.id) as likes
-FROM post p
-         JOIN user u ON u.id = p.createdBy
-ORDER BY p.createdAt DESC';
-
-//        $sql .= " LIMIT $limit OFFSET $offset";  //TODO: PAGINATION
-
-        return $this->query($sql);
+//        $offset = ($page - 1) * $limit;
+        return Prisma::sql()
+            ->select(
+                "p.id",
+                "p.content",
+                alias('u.username', 'createdBy'),
+                alias('u.id', 'createdById'),
+                Prisma::sql()->select(CNT())->from('`like`')->
+                where(equals('contentId', 'p.id'))
+                    ->nested()->alias('likes'),
+                Prisma::sql()->select(CNT())->from('`like`')->
+                where(equals('u.id',':userId'), equals('contentId', 'p.id'))
+                    ->nested()->alias('isLiked')
+            )
+            ->from("content p")
+            ->join("user u", "u.id = p.createdBy")
+            ->where("p.type = 'post'")
+            ->order("p.createdAt", DESC)
+//            ->limit($limit)
+//            ->offset($offset)
+            ->bind(['userId'=>User::id()])
+            ->execute();
     }
 
 
-    public function getLikes($id)
+    public function checkIfLiked($object)
     {
-        $sql = 'SELECT COUNT(*) FROM `like` l WHERE l.commentId = $id';
-        return $this->query_unique($sql);
-    }
-
-    private function checkIfLiked($object)
-    {
-        $where = 'WHERE l.postId = :postId && l.userId = :userId';
-        $checkerSQL = 'SELECT COUNT(*) as isLiked FROM `like` l ' . $where;
-        $isLiked = $this->likes->query_unique($checkerSQL, $object)['isLiked'];
-        return !!$isLiked ? $this->likes->query_unique('SELECT l.id as id from `like` l ' . $where, $object)['id'] : !!$isLiked;
+        $where = Prisma::sql()->where(
+            equals('l.contentId', ':contentId'),
+            equals('l.userId', ':userId'));
+        $isLiked = Prisma::sql()->select(alias(CNT(), 'isLiked'))
+            ->from('`like` l')
+            ->append($where)
+            ->bind($object)
+            ->execute_unique()['isLiked'];
+        return !!$isLiked ? Prisma::sql()->select(alias('l.id', 'id'))
+            ->from('`like` l')->
+            append($where)->
+            bind($object)
+            ->execute_unique()['id']
+            : !!$isLiked;
     }
 
     public function handleLike($id)
     {
-        $object = ['userId' => Flight::get('user')['id'], 'postId' => $id];
+        $object = ['userId' => User::id(), 'contentId' => $id];
         if ($id = $this->checkIfLiked($object)) {
             $this->likes->delete($id);
             return false;
