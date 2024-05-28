@@ -79,7 +79,7 @@ $(document).ready(() => {
                     ${button}
                     <div class="px-4 position-absolute like-btn">
                         ${likeButton}
-                        <span id="likes">${likes}</span>
+                        <span id="likes">${likes ?? 0}</span>
                     </div>
                     ${isOwner ? editButton : ""}
                 </div>
