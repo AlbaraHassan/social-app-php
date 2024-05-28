@@ -112,12 +112,7 @@ textarea.form-control{
     cursor: pointer;
 }
 
-.like:hover {
-    cursor: pointer;
-    animation: wiggle 0.5s ease-in-out infinite;
-}
-
-.edit:hover {
+.icon:hover {
     cursor: pointer;
     animation: wiggle 0.5s ease-in-out infinite;
 }
@@ -130,17 +125,5 @@ textarea.form-control{
 
 .show-more-btn{
     bottom: 10px;
-    right: 50px;
-}
-
-
-.like-btn{
-    bottom: 25px;
-    left: 50px;
-}
-
-
-.edit_btn{
-    top: 30px;
     right: 50px;
 }
