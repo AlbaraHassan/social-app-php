@@ -74,17 +74,37 @@ class BaseDao{
     }
 
     public function update($id, $entity, $id_column = "id"){
+        // Check if the table has the 'createdAt' field
+        $tableFields = $this->getTableFields($this->table_name);
+        $includeCreatedAt = in_array('createdAt', $tableFields);
+
+        // Construct the UPDATE query
         $query = "UPDATE ".$this->table_name." SET ";
         foreach($entity as $name => $value){
             $query .= $name ."= :". $name. ", ";
         }
-        $query = substr($query, 0, -2);
+        $query = rtrim($query, ", "); // Remove the trailing comma
+
+        // Include 'createdAt' field in the query if it exists in the table
+        if ($includeCreatedAt) {
+            $query .= ", createdAt = createdAt"; // Keep the existing 'createdAt' value
+        }
+
         $query .= " WHERE $id_column = :id";
 
-        $stmt= $this->conn()->prepare($query);
+        // Prepare and execute the query
+        $stmt = $this->conn()->prepare($query);
         $entity['id'] = $id;
         $stmt->execute($entity);
+
         return $entity;
+    }
+
+    private function getTableFields($tableName) {
+        $query = "SHOW COLUMNS FROM $tableName";
+        $stmt = $this->conn()->query($query);
+        $fields = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return $fields;
     }
 
 
