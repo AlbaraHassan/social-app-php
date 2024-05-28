@@ -59,10 +59,9 @@ class PostDao extends BaseDao
                 Prisma::sql()->select(CNT())->from('`like`')->
                 where(equals('contentId', 'p.id'))
                     ->nested()->alias('likes'),
-                Prisma::sql()->select(CNT())->from('`like`')->
-                where(equals('u.id',':userId'), equals('contentId', 'p.id'))
-                    ->nested()->alias('isLiked')
-            )
+                Prisma::sql()->select(CNT())->from('`like`')
+                    ->where(equals('userId', ':userId'), equals('contentId', 'p.id'))
+                    ->nested()->alias('isLiked')            )
             ->from("content p")
             ->join("user u", "u.id = p.createdBy")
             ->where("p.type = 'post'")
