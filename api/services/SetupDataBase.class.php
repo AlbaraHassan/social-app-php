@@ -100,9 +100,10 @@ class SetupDatabase extends BaseDao
         ], [
             "parentId" => "content",
             "createdBy" => "user"
-        ]);
+        ], ["parentId" => "CASCADE"]);
     }
-    private function createTableIfNotExists($tableName, $attributes = [], $relations = []): void
+
+    private function createTableIfNotExists($tableName, $attributes = [], $relations = [], $options = []): void
     {
         $query = "CREATE TABLE IF NOT EXISTS $tableName (";
 
@@ -122,6 +123,9 @@ class SetupDatabase extends BaseDao
         $query = rtrim($query, ", ");
         foreach ($relations as $localKey => $foreignTable) {
             $query .= ", FOREIGN KEY ($localKey) REFERENCES $foreignTable(id)";
+            if (isset($options[$localKey]) && $options[$localKey] === "CASCADE") {
+                $query .= " ON DELETE CASCADE";
+            }
         }
         $query .= ")";
 
@@ -134,7 +138,6 @@ class SetupDatabase extends BaseDao
             error_log("Error creating $tableName table: " . $e->getMessage());
         }
     }
-
     public function createTables(): void
     {
         $this->createUserTable();

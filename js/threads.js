@@ -60,6 +60,7 @@ const urlParams = new URLSearchParams(window.location.search);
         const likeButton = `<img id=${id} class="like" src=${isLiked ? "public/liked.svg" : "public/unliked.svg"} alt="" height="24" width="24" />`;
         const isOwner = createdById === JSON.parse(localStorage.getItem('user')).id;
         const editButton = `<img id=${id} class="edit position-absolute edit_btn" src="public/edit.svg" alt="" height="24" width="24" />`;
+        const deleteButton = `<img id=${id} class="edit position-absolute delete_btn" src="public/delete.svg" alt="" height="24" width="24" />`;
 
         return `
             <div class="card mb-3 w-100 shadow-sm border-light-subtle border-1 position-relative p-4">
@@ -79,6 +80,7 @@ const urlParams = new URLSearchParams(window.location.search);
                         <span id="likes">${likes ?? 0}</span>
                     </div>
                     ${isOwner ? editButton : ""}
+                    ${isOwner ? deleteButton : ""}
                 </div>
             </div>
         `;
@@ -94,6 +96,40 @@ const urlParams = new URLSearchParams(window.location.search);
         history.pushState(null, null, url);
         location.reload()
     });
+
+    $(document).on('click', '#parent  .delete_btn', function () {
+        const postId = $(this).attr('id');
+
+        $.ajax({
+            type: 'DELETE',
+            url: `/web/api/post?id=${postId}`,
+            headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
+            success: (response) => {
+                window.location.replace('#home')
+            },
+            error: (error) => {
+                console.error('Failed to delete post:', error);
+            }
+        });
+    })
+
+
+
+    $(document).on('click', '#comments  .delete_btn', function () {
+        const postId = $(this).attr('id');
+
+        $.ajax({
+            type: 'DELETE',
+            url: `/web/api/comment?id=${postId}`,
+            headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
+            success: (response) => {
+                $(`div[id^=post-${postId}]`).parent().remove();
+            },
+            error: (error) => {
+                console.error('Failed to delete post:', error);
+            }
+        });
+    })
 
     $(document).on('click', '.like', function (event) {
         event.stopPropagation()

@@ -142,5 +142,10 @@ textarea.form-control{
 
 .edit_btn{
     top: 30px;
+    right: 100px;
+}
+
+.delete_btn{
+    top: 30px;
     right: 50px;
 }

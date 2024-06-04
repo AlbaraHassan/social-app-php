@@ -7,26 +7,26 @@ $(document).ready(() => {
     $('#post-form').validate({
         errorElement: 'small',
         rules: {
-            content: { required: true }
+            content: {required: true}
         },
-        messages: { content: 'Content is required' },
+        messages: {content: 'Content is required'},
         submitHandler: (form, event) => {
             event.preventDefault();
             const content = $('#content').val();
             if (!content) return;
-            const formData = { content };
+            const formData = {content};
             $.ajax({
                 type: 'POST',
                 url: '/web/api/post',
                 data: JSON.stringify(formData),
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
                 contentType: 'application/json',
                 success: (post) => {
                     $('#content').val('');
                     $('#posts').prepend(createPostCard(post));
                 },
-                error: ({ xhr, status, error }) => {
-                    console.error({ xhr, status, error });
+                error: ({xhr, status, error}) => {
+                    console.error({xhr, status, error});
                     const errorMessage = xhr.responseText ? JSON.parse(xhr.responseText).message : 'Unknown error';
                 }
             });
@@ -56,13 +56,14 @@ $(document).ready(() => {
     };
 
     const createPostCard = (post) => {
-        const { createdBy, createdById, content, id, likes, isLiked } = post;
+        const {createdBy, createdById, content, id, likes, isLiked} = post;
         const avatar = createUserAvatar(createdBy, createdById);
         const lines = content.split('\n').length;
         const button = lines > 4 ? `<img alt="" height="60" width="60" src="public/down.svg" class="btn btn-link position-absolute show-more-btn"/>` : '';
         const likeButton = `<img id=${id} class="like" src=${isLiked ? "public/liked.svg" : "public/unliked.svg"} alt="" height="24" width="24" />`;
         const isOwner = createdById === JSON.parse(localStorage.getItem('user')).id;
         const editButton = `<img id=${id} class="edit position-absolute edit_btn" src="public/edit.svg" alt="" height="24" width="24" />`;
+        const deleteButton = `<img id=${id} class="edit position-absolute delete_btn" src="public/delete.svg" alt="" height="24" width="24" />`;
 
         return `
             <div class="card mb-3 w-100 shadow-sm border-light-subtle border-1 position-relative p-4">
@@ -82,6 +83,7 @@ $(document).ready(() => {
                         <span id="likes">${likes ?? 0}</span>
                     </div>
                     ${isOwner ? editButton : ""}
+                    ${isOwner ? deleteButton : ""}
                 </div>
             </div>
         `;
@@ -97,7 +99,7 @@ $(document).ready(() => {
             type: 'PATCH',
             url: `/web/api/post/like?id=${$(this).attr('id')}`,
             contentType: 'application/json',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+            headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
             success: (response) => {
                 if (response) {
                     text.text(parseInt(text.text()) + 1);
@@ -107,8 +109,8 @@ $(document).ready(() => {
                     icon.attr('src', 'public/unliked.svg');
                 }
             },
-            error: ({ xhr, status, error }) => {
-                console.error({ xhr, status, error });
+            error: ({xhr, status, error}) => {
+                console.error({xhr, status, error});
                 const errorMessage = xhr.responseText ? JSON.parse(xhr.responseText).message : 'Unknown error';
             }
         });
@@ -116,6 +118,22 @@ $(document).ready(() => {
 
     $(document).on('click', '.edit-form textarea, .edit-form button', function (event) {
         event.stopPropagation();
+    });
+
+    $(document).on('click', '.delete_btn', function () {
+        const postId = $(this).attr('id');
+
+        $.ajax({
+            type: 'DELETE',
+            url: `/web/api/post?id=${postId}`,
+            headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
+            success: (response) => {
+                $(`div[id^=post-${postId}]`).parent().remove();
+            },
+            error: (error) => {
+                console.error('Failed to delete post:', error);
+            }
+        });
     });
 
     $(document).on('click', '.edit', function (event) {
@@ -153,19 +171,19 @@ $(document).ready(() => {
         $('.edit-form').validate({
             errorElement: 'small',
             rules: {
-                content: { required: true }
+                content: {required: true}
             },
-            messages: { content: 'Content is required' },
+            messages: {content: 'Content is required'},
             submitHandler: (form, event) => {
                 event.preventDefault();
                 const content = $('.edit-form #content').val();
                 if (!content) return;
-                const formData = { content };
+                const formData = {content};
                 $.ajax({
                     type: 'PATCH',
                     url: `/web/api/post?id=${form.id}`,
                     data: JSON.stringify(formData),
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                    headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
                     contentType: 'application/json',
                     success: (post) => {
                         $('#content').val('');
@@ -173,8 +191,8 @@ $(document).ready(() => {
                         history.pushState(null, null, url);
                         location.reload();
                     },
-                    error: ({ xhr, status, error }) => {
-                        console.error({ xhr, status, error });
+                    error: ({xhr, status, error}) => {
+                        console.error({xhr, status, error});
                         const errorMessage = xhr.responseText ? JSON.parse(xhr.responseText).message : 'Unknown error';
                     }
                 });
@@ -182,9 +200,6 @@ $(document).ready(() => {
         })
 
     });
-
-
-
 
 
     $(document).on('click', 'div[id^=post-]', function () {
@@ -217,14 +232,14 @@ $(document).ready(() => {
         type: 'GET',
         url: '/web/api/post/all',
         contentType: 'application/json',
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`},
         success: (response) => {
             response.forEach((post) => {
                 $('#posts').append(createPostCard(post));
             });
         },
-        error: ({ xhr, status, error }) => {
-            console.error({ xhr, status, error });
+        error: ({xhr, status, error}) => {
+            console.error({xhr, status, error});
             const errorMessage = xhr.responseText ? JSON.parse(xhr.responseText).message : 'Unknown error';
         }
     });
